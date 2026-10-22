@@ -14,9 +14,9 @@
 ## Roster
 
 | Name | Role | GitHub | Contact hours (ET) |
-|Regina Choi|Reviewer|ReginaChoi|17:00-00:00|
-|Rishi Ajith|Architect|RishiA10|Flexible|
-| Kenneth Riley II | Specifier | kdotll | Flexible |
+|Regina Choi|Implementer|ReginaChoi|17:00-00:00|
+|Rishi Ajith|Reviewer|RishiA10|Flexible|
+| Kenneth Riley II | Architect | kdotll | Flexible |
 
 ## RACI Matrix (Phase 1)
 
@@ -34,9 +34,29 @@ R = Responsible (does the work), A = Accountable (answers for it; exactly one pe
 | .github/CODEOWNERS and branch protection | I | C | A, R | C | |
 | docs/PROBE-001.md and docs/DDR-001.md | A | C | A (DDR), R | C | |
 | context/EVALS.md (OST, RAT) | C | C | C | A, R | |
-| context/EVALS.md (Prediction Stakes) | A, R | R | R | A, R | |
+| context/EVALS.md (Prediction Stakes) | C | R | R | A, R | |
 | Pull request reviews | R | R | C | A, R | |
 | README.md | C | C | A, R | C | |
+
+## RACI Matrix (Phase 2)
+
+R = Responsible (does the work), A = Accountable (answers for it; exactly one person, always a person), C = Consulted (asked before), I = Informed (told after). AI tools may be R or C and are never A. Every row where AI is R names the human A beside it.
+
+| Artifact | Kenneth R. (Architect) | Rishi A. (Reviewer) | Kamyaab C. (Specifier) | Regina C. (Implementer) | AI tools |
+|---|---|---|:---:|---|---|
+| TEAM.md | A, R | | | | |
+| docs/DACI-001.md | I | | | | |
+| context/PROJECT.md | C | | | | |
+| context/USERS.md | C | | | | |
+| context/FEATURES.md | C | | | | |
+| context/ARCHITECTURE.md | A, R | | | | |
+| context/STANDARDS.md, TOOLS.md, CLAUDE.md | C | | | | |
+| .github/CODEOWNERS and branch protection | C | | | | |
+| docs/PROBE-001.md and docs/DDR-001.md | I | | | | |
+| context/EVALS.md (OST, RAT) | C | | | | |
+| context/EVALS.md (Prediction Stakes) | C | | | | |
+| Pull request reviews | R | | | | |
+| README.md | C | | | | |
 
 ## Rotation Plan
 
@@ -57,3 +77,5 @@ Nobody holds the same role twice, and every role is filled in every phase.
 |---|---|---|
 | **Sunday, October 4, 2026 (6:00 PM)** | Conducted first formal team sync after HW5 submission. Drafted working agreement, assigned Phase 1 roles, drew Approver by lot for DACI-001, and agreed on problem-selection criteria weights. | Kenneth Riley II |
 | **Wednesday, October 7, 2026 (5:30 PM)** | Reviewed role artifact pull requests, reconciled STANDARDS.md conflicts, validated tools/governance files, and finalized README structure and cross-document link consistency before release. | Kamyaab Cornett |
+| **Wednesday, October 14, 2026 (6:00 PM)** | Conducted first formal team sync after Phase 1 submission. clarified Phase 2 roles, created a timeline and plan on how we'll tackle each portion. | Kenneth Riley II |
+| **Thursday, October 22, 2026 (3:00 PM)** | Informed of a workload shift within our team, discussed ideas to pivot, reached out to professor for extention and was denied. | Kenneth Riley II |
