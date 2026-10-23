@@ -58,3 +58,8 @@ Things this interface will never do, and why.
 - **Admired:** Free File Fillable Forms, the IRS's plain-form tax tool. It uses a simple form-oriented interface without unnecessary navigation or decorative elements. ![Admired](image-8.png)
 
 - **Resented:** A job-application portal with a spinning modal and progress indicator during draft saving. The example is based on the author's experience rather than a reproduced screenshot. The specific problem being avoided is unnecessary interruption and uncertainty during a simple save action.
+## Team Merge Notes (Phase 2)
+
+- **Source:** In Phase 1 the team adopted Regina Choi's HW5 version of this file as the team baseline, and Phase 2 keeps it.
+- **Conflicts:** None. No competing member version was carried forward into the Phase 1 or Phase 2 team files, so there was nothing to reconcile.
+- **Phase 2 changes:** Added only what the build needed (STYLE.md: `color-success` for the F-01 Eligible badge). Recorded October 22, 2026 by Regina Choi (Implementer).

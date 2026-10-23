@@ -20,3 +20,8 @@ errors; never throw to the console.
 **When:** an AI tool generates a feature for an existing project.
 **Do:** preserve the original output first; inspect the diff, dependencies, storage, security-sensitive patterns, and design tokens; then run the feature's EARS checks and automated tests.
 **Because:** generated code can satisfy the visible feature while still changing architecture, adding dependencies, or violating project standards.
+## Team Merge Notes (Phase 2)
+
+- **Source:** In Phase 1 the team adopted Regina Choi's HW5 version of this file as the team baseline, and Phase 2 keeps it.
+- **Conflicts:** None. No competing member version was carried forward into the Phase 1 or Phase 2 team files, so there was nothing to reconcile.
+- **Phase 2 changes:** Added only what the build needed (STYLE.md: `color-success` for the F-01 Eligible badge). Recorded October 22, 2026 by Regina Choi (Implementer).
