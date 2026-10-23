@@ -1,33 +1,23 @@
 // worker.js
-// The whole server. Read it before you deploy it.
-//
-// One function. Cloudflare calls it with every request that reaches the
-// deployed workers.dev URL and sends back whatever Response is returned.
-//
-// Four things to recognize here, because they show up again in code I did
-// not write later in the course:
-// env.DB          the D1 binding from wrangler.toml (no connection string, nothing to leak)
-// bind(?)         the user's value goes in as a parameter, never pasted into the SQL
-// status 400      the EARS "unwanted behavior" row, executable
-// CORS headers    tell the browser the page is allowed to call this Worker
-// Session B leaves this at "*" so everyone's page works on the first try.
-// Craft credit for HW4 is replacing "*" with the page's real origin once deployed.
+// The API for the candidate screening prototype (ADR-001: Worker + D1).
+// Static pages in public/ are served by Workers static assets from the same
+// origin, so only /entries reaches this code and no cross-origin CORS is needed.
 
-const CORS = {
-  "access-control-allow-origin": "https://super-pancake-jrq4j6xq5ggvc5qpp-5501.app.github.dev",
-  "access-control-allow-methods": "GET, POST, OPTIONS",
-  "access-control-allow-headers": "content-type",
-};
+import { validatePayload, evaluateEligibility } from "./eligibility.js";
+
+const JSON_HEADERS = { "content-type": "application/json; charset=utf-8" };
+
+function json(data, status) {
+  return new Response(JSON.stringify(data), { status, headers: JSON_HEADERS });
+}
 
 export default {
   async fetch(request, env) {
-    // Anything that throws below becomes a readable 500 instead of a bare
-    // "Error 1101: Worker threw exception." The message names the cause,
-    // which is what the verification table needs.
+    // A thrown error becomes a readable 500 instead of "Error 1101".
     try {
       return await handle(request, env);
     } catch (err) {
-      return new Response("server error: " + err.message, { status: 500, headers: CORS });
+      return json({ error: "server error: " + err.message }, 500);
     }
   },
 };
@@ -35,59 +25,63 @@ export default {
 async function handle(request, env) {
   const url = new URL(request.url);
 
-  // Browsers send an OPTIONS "preflight" before a JSON POST from another
-  // origin. Answer it with the CORS headers and nothing else.
-  if (request.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers: CORS });
+  if (url.pathname !== "/entries") {
+    return json({ error: "not found" }, 404);
   }
-
-  // The most common Session B failure: the D1 binding did not attach
-  // because wrangler.toml still says PASTE_ID_HERE or the id was pasted badly.
   if (!env.DB) {
-    return new Response(
-      "server error: no D1 binding. Check database_id in wrangler.toml and redeploy.",
-      { status: 500, headers: CORS });
+    return json({ error: "server error: no D1 binding" }, 500);
   }
 
-  if (request.method === "GET" && url.pathname === "/entries") {
+  // F-03 Event-driven: GET /entries returns all evaluations in chronological order.
+  if (request.method === "GET") {
     const { results } = await env.DB.prepare(
-      "SELECT * FROM evidence ORDER BY id").all();
-    return Response.json(results, { headers: CORS });
+      "SELECT id, candidate_name, degree, graduation_year, work_authorization, coursework, artifact_url, status, unmet_reasons, created_at FROM candidates ORDER BY created_at, id"
+    ).all();
+    return json(results.map(toApi), 200);
   }
 
-  if (request.method === "POST" && url.pathname === "/entries") {
+  // F-02 / F-01 / F-03: validate, evaluate, then persist.
+  if (request.method === "POST") {
     let body;
     try {
       body = await request.json();
     } catch {
-      return new Response("body must be JSON", { status: 400, headers: CORS });
+      body = null;
     }
 
-    const pathId = typeof body.pathId === "string" ? body.pathId.trim() : "";
-    const skillName = typeof body.skillName === "string" ? body.skillName.trim() : "";
-    const evidenceText = typeof body.evidenceText === "string" ? body.evidenceText.trim() : "";
-
-    if (!pathId || !skillName) {
-      return new Response("pathId and skillName are required", { status: 400, headers: CORS });
+    // F-02 Event-driven: missing, null, or empty fields -> 400 with the specified JSON error.
+    const result = validatePayload(body);
+    if (!result.ok) {
+      return json({ error: result.error, fields: result.fields }, 400);
     }
 
-    // HW4 Part 3 validation rule. This traces to AC-8 in FEATURES.md:
-    // "IF the evidence text is missing or longer than 200 characters,
-    // THEN THE SYSTEM SHALL reject the request with a 400 status and a
-    // message naming the problem." The client already checks this before
-    // sending; the server checks it again because a request can reach this
-    // Worker without going through the page at all.
-    const characterCount = Array.from(evidenceText).length;
-    if (characterCount < 1 || characterCount > 200) {
-      return new Response("evidence text must be 1 to 200 characters", { status: 400, headers: CORS });
-    }
+    // F-01: binary status; Ineligible records are still stored (ADR-001 Decision).
+    const r = result.record;
+    const { status, unmet } = evaluateEligibility(r);
 
-    await env.DB.prepare(
-      "INSERT INTO evidence (path_id, skill_name, evidence_text) VALUES (?, ?, ?)"
-    ).bind(pathId, skillName, evidenceText).run();
+    // F-03 Ubiquitous: parameterized insert through env.DB.
+    const row = await env.DB.prepare(
+      "INSERT INTO candidates (candidate_name, degree, graduation_year, work_authorization, coursework, artifact_url, status, unmet_reasons) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id, candidate_name, degree, graduation_year, work_authorization, coursework, artifact_url, status, unmet_reasons, created_at"
+    ).bind(r.candidateName, r.degree, r.graduationYear, r.workAuthorization, r.coursework, r.artifactUrl, status, JSON.stringify(unmet)).first();
 
-    return new Response(null, { status: 201, headers: CORS });
+    // F-03 Event-driven: HTTP 201 with the persisted candidate data.
+    return json(toApi(row), 201);
   }
 
-  return new Response("not found", { status: 404, headers: CORS });
+  return json({ error: "method not allowed" }, 405);
+}
+
+function toApi(row) {
+  return {
+    id: row.id,
+    candidateName: row.candidate_name,
+    degree: row.degree,
+    graduationYear: row.graduation_year,
+    workAuthorization: row.work_authorization,
+    coursework: row.coursework,
+    artifactUrl: row.artifact_url,
+    status: row.status,
+    unmet: JSON.parse(row.unmet_reasons || "[]"),
+    createdAt: row.created_at,
+  };
 }

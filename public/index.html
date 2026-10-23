@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Candidate Compliance Gate | Team Beta</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main>
+    <h1>Candidate Compliance Gate</h1>
+    <p>Enter a candidate's qualification profile. The gate checks four fixed criteria and returns Eligible or Ineligible. Use synthetic data only.</p>
+
+    <h2>Qualification profile</h2>
+    <form id="candidate-form" novalidate>
+      <label for="candidateName">Candidate name</label>
+      <input id="candidateName" name="candidateName" type="text" autocomplete="off" maxlength="100">
+      <p class="field-error" id="candidateName-error" role="alert"></p>
+
+      <label for="degree">Degree discipline</label>
+      <select id="degree" name="degree">
+        <option value="">Select a discipline</option>
+        <option>Accounting</option>
+        <option>Finance</option>
+        <option>Accounting Information Systems</option>
+        <option>Internal Audit</option>
+        <option>Marketing</option>
+        <option>Computer Science</option>
+        <option>Other</option>
+      </select>
+      <p class="field-error" id="degree-error" role="alert"></p>
+
+      <label for="graduationYear">Graduation year</label>
+      <input id="graduationYear" name="graduationYear" type="number" min="1950" max="2100" step="1">
+      <p class="field-error" id="graduationYear-error" role="alert"></p>
+
+      <label for="workAuthorization">Work authorization</label>
+      <select id="workAuthorization" name="workAuthorization">
+        <option value="">Select a status</option>
+        <option>Citizen</option>
+        <option>Permanent Resident</option>
+        <option>F-1 OPT</option>
+        <option>Verified Work Visa</option>
+        <option>None</option>
+      </select>
+      <p class="field-error" id="workAuthorization-error" role="alert"></p>
+
+      <label for="coursework">Completed governance course</label>
+      <select id="coursework" name="coursework">
+        <option value="">Select a course</option>
+        <option>Auditing</option>
+        <option>Accounting Information Systems</option>
+        <option>Internal Controls</option>
+        <option>None</option>
+      </select>
+      <p class="field-error" id="coursework-error" role="alert"></p>
+
+      <label for="artifactUrl">Coursework artifact URL</label>
+      <input id="artifactUrl" name="artifactUrl" type="url" autocomplete="off" placeholder="https://">
+      <p class="field-error" id="artifactUrl-error" role="alert"></p>
+
+      <button type="submit">Evaluate and save</button>
+    </form>
+
+    <p id="status" role="status" aria-live="polite"></p>
+    <div id="result" hidden></div>
+
+    <h2>Candidate triage</h2>
+    <ul id="candidate-list" aria-label="Saved candidate evaluations"></ul>
+  </main>
+</body>
+</html>

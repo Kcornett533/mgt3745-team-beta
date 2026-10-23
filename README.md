@@ -21,7 +21,24 @@ Phase 1 established the problem scope, domain model, architectural boundaries, a
 
 ## See It Work
 
-*Phase 2 deliverable: Deployed edge URL and demonstration walk-throughs will be provided upon completion of the Phase 2 build.*
+**Deployed URL:** https://team-beta-screening.rchoi47.workers.dev
+
+Enter a synthetic candidate profile and press **Evaluate and save**. The page shows a green **Eligible** or red **Ineligible** badge, names any unmet criteria, and adds the record to the triage list, which loads from D1. Screenshots: *to be added*.
+
+## Build Status
+
+| Feature | Class | State | Evidence |
+|---|---|---|---|
+| F-01 Accounting Compliance Knockout Gate | Must-be | Deployed; smoke tests pass | `test/eligibility.test.js`, live checks in [DDR-004](docs/DDR-004.md) |
+| F-02 Strict Verification Schema & Error Gate | Must-be | Deployed; 400 + JSON error verified live | [DDR-004](docs/DDR-004.md) |
+| F-03 Edge Relational Audit Persistence (D1) | Must-be | Deployed; POST 201 and GET /entries verified live | [DDR-004](docs/DDR-004.md) |
+| F-04 to F-06 | Performance / Attractive | Not built | |
+
+The full EVALS.md code evals are owned by the Reviewer. Judgment evals and Prediction Stakes are owned by the Evaluator and are recorded in [context/EVALS.md](context/EVALS.md).
+
+**Run the tests:** `npm test` (Node 18 or later, no install needed).
+
+**Deploy:** `npx wrangler d1 execute team-beta-candidates --remote --file=schema.sql`, then `--file=seed.sql`, then `npx wrangler deploy`.
 
 ## Links, in Reading Order
 
