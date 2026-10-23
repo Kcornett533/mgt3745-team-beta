@@ -9,6 +9,7 @@ The values below are the design tokens already used in `styles.css`. No new colo
 - color-text: "#172b40"
 - color-background: "#f7f9fb"
 - color-primary: "#123552"
+- color-success: "#1b8036" (Phase 2: F-01 Eligible badge, value from FEATURES.md)
 - color-error: "#922020"
 - color-focus: "#b16d00"
 - font-body: "Arial, Helvetica, sans-serif"

@@ -82,3 +82,11 @@ input[aria-invalid="true"] { border: 2px solid #a02020; }
 }
 
 #copy-status { color: #1d5b32; margin-top: 0.5rem; }
+/* Phase 2: F-01 status badges and F-02 error states (tokens per STYLE.md). */
+:root { --color-success: #1b8036; }
+.field-error, #status.error { color: var(--color-error); font-weight: 700; }
+[aria-invalid="true"] { border-color: var(--color-error); }
+.badge { display: inline-block; padding: 0.15rem 0.6rem; border-radius: var(--radius); color: #fff; font-weight: 700; }
+.badge-eligible { background: var(--color-success); }
+.badge-ineligible { background: var(--color-error); }
+#candidate-list li { margin: 0.5rem 0; }
