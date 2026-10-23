@@ -21,7 +21,7 @@ Phase 1 established the problem scope, domain model, architectural boundaries, a
 
 ## See It Work
 
-*Phase 2 deliverable: Deployed edge URL and demonstration walk-throughs will be provided upon completion of the Phase 2 build.*
+*Deployed URL:* `https://team-beta-screening.workers.dev`
 
 ## Links, in Reading Order
 
@@ -36,11 +36,12 @@ Phase 1 established the problem scope, domain model, architectural boundaries, a
 9. [ADR-002: Evidence Verification & Relational Schema](context/ARCHITECTURE.md#adr-002-formalize-cloudflare-worker-api-contracts-d1-relational-schema-and-evidence-verification)
 10. [D1 Database Schema](context/ARCHITECTURE.md#d1-database-schema)
 11. [DDR-003: Feature F-02 Implementation](docs/DDR-003.md)
-12. [context/EVALS.md](context/EVALS.md): the tree, the RAT, every member's stake
-13. [context/CLAUDE.md](context/CLAUDE.md), [context/STANDARDS.md](context/STANDARDS.md), [context/TOOLS.md](context/TOOLS.md): how we work
-14. [docs/DDR-001.md](docs/DDR-001.md): the probe delegation
-15. [STYLE.md](context/STYLE.md)
-16. [SKILLS.md](context/SKILLS.md)
+12. [DDR-004: Three Must-Be Features Implementation](docs/DDR-004.md)
+13. [context/EVALS.md](context/EVALS.md): the tree, the RAT, every member's stake
+14. [context/CLAUDE.md](context/CLAUDE.md), [context/STANDARDS.md](context/STANDARDS.md), [context/TOOLS.md](context/TOOLS.md): how we work
+15. [docs/DDR-001.md](docs/DDR-001.md): the probe delegation
+16. [STYLE.md](context/STYLE.md)
+17. [SKILLS.md](context/SKILLS.md)
 
 ## AI Use
 

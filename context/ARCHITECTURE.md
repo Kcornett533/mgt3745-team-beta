@@ -71,80 +71,89 @@ The team selects Build: a plain HTML/CSS/JavaScript frontend communicating with 
 ### Revisit Trigger
 Review this decision before Phase 2 implementation begins and no later than October 22, 2026. Reopen it sooner if the team needs real applicant data, independent credential verification, protected audit history, or a record volume that makes downloading and filtering the authorized list impractical. The Architect will bring revised options to the Approver. If the decision changes after acceptance, record a superseding ADR instead of silently rewriting the accepted decision. 
 
-## ADR-002: Formalize Cloudflare Worker API Contracts, D1 Relational Schema, and Evidence Verification
+## ADR-002: Formalize Cloudflare Worker API Contracts, D1 Relational Schema, and Edge Knockout Validation
 
 - **Date:** October 22, 2026
 - **Status:** Accepted (Supersedes ADR-001)
 - **Accountable:** Kenneth Riley II
-- **Approver:**
+- **Approver:** Regina Choi
 - **Door:** Two-way
 
 ### Context
-Phase 1 selected Cloudflare Workers and D1 to host candidate intake, eligibility verification, and persistence. During Phase 2 implementation (Feature F-02 / verification schema), empirical findings required formalizing server-side validation and persistent storage. Rather than relying solely on ephemeral client-side storage, candidate skill declarations and accompanying evidence text must persist in a relational Cloudflare D1 database. Furthermore, input boundaries (specifically 10–200 character constraints on evidence submissions) must be enforced deterministically at the edge Worker level to prevent invalid data ingestion.
+Phase 1 selected Cloudflare Workers and D1 to host candidate screening and audit persistence. In Phase 2 (PR #20), empirical testing revealed that candidate evaluation logic must execute authoritatively at the edge to prevent client-side bypass and maintain audit readiness. Candidate evaluation records for Accounting/Finance applicants must persist in a relational Cloudflare D1 table (`candidates`) to maintain compliance records, enforce deterministic knockout evaluation (`eligibility.js`), and standardize status tokens matching `FEATURES.md` (`#1b8036` / `#922020`). The frontend assets and edge API run unified from a single Cloudflare Worker deployment.
 
 ### Options
-1. **Client-only validation with passive D1 sync:** Client validates lengths and saves directly to D1. (Rejected: client DOM manipulation can bypass character length constraints and compromise data integrity).
-2. **Edge-authoritative Worker API with D1 persistence:** Client form (`app.js`) validates lengths for immediate user feedback; edge Worker (`worker.js`) authoritatively validates payloads and writes to table `evidence` via parameterized statements (`.bind()`).
-3. **External storage service (Supabase/Airtable):** Revisit Buy/Delegate option. (Rejected: introduces third-party data egress violating Trust Boundary and budget constraints).
+1. **Client-only validation with passive storage:** Browser evaluates eligibility and writes directly. (Rejected: prone to tampering and fails to guarantee audit determinism).
+2. **Unified Edge Worker API with D1 persistence:** Form UI and API routes are served from a single Worker deployment; candidate submissions hit `/entries`, where the Worker validates inputs, executes knockout rules (`eligibility.js`), and stores records in table `candidates` via parameterized statements (`.bind()`).
+3. **External storage service (Supabase/Airtable):** Revisit Buy/Delegate option. (Rejected: introduces third-party data egress violating the Trust Boundary).
 
 ### Decision
-The team selects Option 2. Candidate evidence submission and verification logic run on Cloudflare Workers and D1 (`wrangler.toml` binding `env.DB`). The Worker exposes two authoritative REST endpoints:
-1. `POST /api/evidence`: Validates that `pathId`, `skillName`, and `evidenceText` exist, and enforces that `evidenceText` is between 10 and 200 characters. Rejects malformed requests with HTTP 400 (`{ error: "evidenceText must be 10 to 200 characters" }`). Inserts valid payloads into table `evidence` using `env.DB.prepare(...).bind(pathId, skillName, evidenceText)` and returns HTTP 201 with the created record metadata.
-2. `GET /api/evidence?path_id=<id>`: Queries D1 using parameterized filtering (`SELECT * FROM evidence WHERE path_id = ?`) and returns JSON arrays of verified candidate evidence.
+The team selects Option 2. Candidate screening, evaluation, and static asset serving run unified on a single Cloudflare Worker and D1 database (`wrangler.toml` binding `env.DB`). The Worker exposes:
+1. `POST /entries`: Validates candidate schema attributes (candidate name, degree, graduation year, work authorization, coursework, artifact URL). Executes the four deterministic knockout rules via `eligibility.js`. Inserts valid candidate evaluations into D1 table `candidates` via parameterized `.bind()`. Returns HTTP 201 with `{ id, status, unmet_reasons }`.
+2. `GET /entries`: Retrieves persisted candidate records via `SELECT * FROM candidates ORDER BY created_at DESC`.
+3. Status badges render `#1b8036` (Eligible) and `#922020` (Ineligible) per `FEATURES.md` and `STYLE.md`.
 
 ### Consequences
-- **Easier:** Guarantees tamper-proof enforcement of Feature F-02 validation rules; provides centralized parameterized persistence in D1 surviving page reloads; surfaces immediate DOM feedback states without page reload.
-- **Harder:** Introduces edge network latency on evidence submission compared to purely in-memory browser storage; requires client error banners and form field preservation if network requests or D1 queries fail; requires handling CORS preflight (`OPTIONS`) across Pages and Worker origins.
-- **Limits:** Stored evidence text and self-reported skill declarations are persisted for recruiter review; the system does not independently verify external portfolio URLs.
-- **Specification follow-up:** Coordinates with Specifier to ensure `FEATURES.md` reflects the 10–200 character boundary rules and HTTP 400 error payloads verified in `DDR-003.md`.
+- **Easier:** Eliminates cross-origin friction by hosting static UI assets and the API from a single Worker runtime; centralizes qualification rules at the edge, guaranteeing deterministic evaluation across all browser clients; provides persistent audit records in D1 surviving page reloads.
+- **Harder:** Introduces edge network latency on triage submissions compared to purely synchronous DOM execution; requires client error banners and form field preservation if network requests or D1 queries fail per `STANDARDS.md`.
+- **Limits:** Stored declarations and URLs are recorded for compliance review; external transcripts are not independently verified.
+- **Specification follow-up:** Synchronized with `FEATURES.md` specifying four knockout criteria and status badge tokens (`#1b8036` / `#922020`).
 
 ### Revisit Trigger
-Reopen if Cloudflare D1 write latency exceeds 800ms during high-volume intake, or if external credential verification APIs are introduced into the project scope before Final release.
+Reopen if Cloudflare D1 write latency exceeds 800ms during high-volume intake, or if external credential verification APIs are added before Final release.
 
 ## D1 Database Schema
 
-To support candidate intake, qualification verification (Feature F-02), and persistent audit trails, the Cloudflare D1 database implements the `evidence` relational table adhering to `STANDARDS.md` parameterized query rules (`.bind()`):
+To support candidate intake, knockout triage (Feature F-01), input validation (Feature F-02), and persistent audit history (Feature F-03), Cloudflare D1 implements the `candidates` relational table adhering to `STANDARDS.md` parameterized query rules (`.bind()`):
 
 ```sql
--- Production D1 Schema for Candidate Verification Persistence
-CREATE TABLE IF NOT EXISTS evidence (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    path_id TEXT NOT NULL,
-    skill_name TEXT NOT NULL,
-    evidence_text TEXT NOT NULL,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+-- Production D1 Schema for Candidate Screening and Audit Persistence (matching schema.sql)
+CREATE TABLE IF NOT EXISTS candidates (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  candidate_name TEXT NOT NULL,
+  degree TEXT NOT NULL,
+  graduation_year INTEGER NOT NULL,
+  work_authorization TEXT NOT NULL,
+  coursework TEXT NOT NULL,
+  artifact_url TEXT,
+  status TEXT NOT NULL CHECK (status IN ('Eligible', 'Ineligible')),
+  unmet_reasons TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_evidence_path ON evidence(path_id);
+CREATE INDEX IF NOT EXISTS idx_candidates_status ON candidates(status);
+CREATE INDEX IF NOT EXISTS idx_candidates_grad_year ON candidates(graduation_year);
 ```
 
 ## Architecture Diagram
 
 ```mermaid
 flowchart TD
-    subgraph Browser ["Client Surface (Cloudflare Pages)"]
+    subgraph Client ["Browser Surface (Public Static Assets)"]
         UI["Candidate Screening UI (index.html, styles.css)"]
-        Form["Evidence Submission Form (app.js)"]
-        Badge["Verification Badge & Status (#15803d / #922020)"]
+        Form["Knockout Triage Form (app.js)"]
+        Badge["Binary Status Badges (#1b8036 / #922020)"]
+        AuditList["Persisted Candidate Audit Table"]
     end
 
     subgraph Edge ["Cloudflare Worker (worker.js)"]
-        Router["Worker Router (/api/evidence)"]
-        CORS["CORS Preflight & Origin Filter"]
-        Validator["Input Length Validator (10-200 chars)"]
+        Router["Worker Router (/entries)"]
+        Validator["Input & Schema Validator (STANDARDS.md)"]
+        Engine["Knockout Evaluation Engine (eligibility.js)"]
     end
 
     subgraph Storage ["Cloudflare D1 Relational Storage"]
-        D1_Evidence[("Table: evidence")]
+        D1_Cand[("Table: candidates")]
     end
 
     UI --> Form
-    Form -->|"POST /api/evidence (JSON)"| Router
-    Router --> CORS
-    CORS --> Validator
-    Validator -->|"INSERT (.bind())"| D1_Evidence
-    D1_Evidence -->|"HTTP 201 JSON {id, created_at}"| Badge
-    UI -->|"GET /api/evidence?path_id=" | Router
-    Router --> CORS
-    CORS -->|"SELECT WHERE path_id = ?"| D1_Evidence
+    Form -->|"POST /entries (JSON payload)"| Router
+    Router --> Validator
+    Validator --> Engine
+    Engine -->|"INSERT record (.bind())"| D1_Cand
+    D1_Cand -->|"HTTP 201 JSON {id, status, unmet_reasons}"| Badge
+    Badge --> AuditList
+    UI -->|"GET /entries"| Router
+    Router -->|"SELECT * ORDER BY created_at DESC"| D1_Cand
+    D1_Cand -->|"JSON array of candidate records"| AuditList
 ```
