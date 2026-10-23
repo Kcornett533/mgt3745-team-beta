@@ -1,6 +1,6 @@
 # ARCHITECTURE.md
 
-Accountable: Rishi Ajith (Architect).
+Accountable: Kenneth Riley II (Architect).
 
 ## The Gate: Build, Buy, or Delegate
 
@@ -51,8 +51,8 @@ Scores are planning estimates, not test results. Each cell shows the score follo
 ## ADR-001: Build the candidate screening prototype with Cloudflare Worker and D1
 
 - **Date:** October 8, 2026
-- **Status:** Accepted
-- **Accountable:** Rishi Ajith (Architect)
+- **Status:** Superseded by ADR-002
+- **Accountable:** Rishi Ajith
 - **Approver:** Kenneth Riley II
 - **Door:** Build
 ### Context
@@ -70,23 +70,90 @@ The team selects Build: a plain HTML/CSS/JavaScript frontend communicating with 
 **Specification follow-up:** Coordinate with the Specifier to clarify F-05's verification meaning and USERS.md's immutable-audit-log claim. Define authorized access to candidate records before using real applicant data. These gaps are recorded explicitly rather than treated as implemented features.
 ### Revisit Trigger
 Review this decision before Phase 2 implementation begins and no later than October 22, 2026. Reopen it sooner if the team needs real applicant data, independent credential verification, protected audit history, or a record volume that makes downloading and filtering the authorized list impractical. The Architect will bring revised options to the Approver. If the decision changes after acceptance, record a superseding ADR instead of silently rewriting the accepted decision. 
+
+## ADR-002: Formalize Cloudflare Worker API Contracts, D1 Relational Schema, and Edge Knockout Validation
+
+- **Date:** October 22, 2026
+- **Status:** Accepted (Supersedes ADR-001)
+- **Accountable:** Kenneth Riley II
+- **Approver:** Regina Choi
+- **Door:** Two-way
+
+### Context
+Phase 1 selected Cloudflare Workers and D1 to host candidate screening and audit persistence. In Phase 2 (PR #20), empirical testing revealed that candidate evaluation logic must execute authoritatively at the edge to prevent client-side bypass and maintain audit readiness. Candidate evaluation records for Accounting/Finance applicants must persist in a relational Cloudflare D1 table (`candidates`) to maintain compliance records, enforce deterministic knockout evaluation (`eligibility.js`), and standardize status tokens matching `FEATURES.md` (`#1b8036` / `#922020`). The frontend assets and edge API run unified from a single Cloudflare Worker deployment.
+
+### Options
+1. **Client-only validation with passive storage:** Browser evaluates eligibility and writes directly. (Rejected: prone to tampering and fails to guarantee audit determinism).
+2. **Unified Edge Worker API with D1 persistence:** Form UI and API routes are served from a single Worker deployment; candidate submissions hit `/entries`, where the Worker validates inputs, executes knockout rules (`eligibility.js`), and stores records in table `candidates` via parameterized statements (`.bind()`).
+3. **External storage service (Supabase/Airtable):** Revisit Buy/Delegate option. (Rejected: introduces third-party data egress violating the Trust Boundary).
+
+### Decision
+The team selects Option 2. Candidate screening, evaluation, and static asset serving run unified on a single Cloudflare Worker and D1 database (`wrangler.toml` binding `env.DB`). The Worker exposes:
+1. `POST /entries`: Validates candidate schema attributes (candidate name, degree, graduation year, work authorization, coursework, artifact URL). Executes the four deterministic knockout rules via `eligibility.js`. Inserts valid candidate evaluations into D1 table `candidates` via parameterized `.bind()`. Returns HTTP 201 with `{ id, status, unmet_reasons }`.
+2. `GET /entries`: Retrieves persisted candidate records via `SELECT * FROM candidates ORDER BY created_at DESC`.
+3. Status badges render `#1b8036` (Eligible) and `#922020` (Ineligible) per `FEATURES.md` and `STYLE.md`.
+
+### Consequences
+- **Easier:** Eliminates cross-origin friction by hosting static UI assets and the API from a single Worker runtime; centralizes qualification rules at the edge, guaranteeing deterministic evaluation across all browser clients; provides persistent audit records in D1 surviving page reloads.
+- **Harder:** Introduces edge network latency on triage submissions compared to purely synchronous DOM execution; requires client error banners and form field preservation if network requests or D1 queries fail per `STANDARDS.md`.
+- **Limits:** Stored declarations and URLs are recorded for compliance review; external transcripts are not independently verified.
+- **Specification follow-up:** Synchronized with `FEATURES.md` specifying four knockout criteria and status badge tokens (`#1b8036` / `#922020`).
+
+### Revisit Trigger
+Reopen if Cloudflare D1 write latency exceeds 800ms during high-volume intake, or if external credential verification APIs are added before Final release.
+
+## D1 Database Schema
+
+To support candidate intake, knockout triage (Feature F-01), input validation (Feature F-02), and persistent audit history (Feature F-03), Cloudflare D1 implements the `candidates` relational table adhering to `STANDARDS.md` parameterized query rules (`.bind()`):
+
+```sql
+-- Production D1 Schema for Candidate Screening and Audit Persistence (matching schema.sql)
+CREATE TABLE IF NOT EXISTS candidates (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  candidate_name TEXT NOT NULL,
+  degree TEXT NOT NULL,
+  graduation_year INTEGER NOT NULL,
+  work_authorization TEXT NOT NULL,
+  coursework TEXT NOT NULL,
+  artifact_url TEXT,
+  status TEXT NOT NULL CHECK (status IN ('Eligible', 'Ineligible')),
+  unmet_reasons TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_candidates_status ON candidates(status);
+CREATE INDEX IF NOT EXISTS idx_candidates_grad_year ON candidates(graduation_year);
+```
+
 ## Architecture Diagram
 
 ```mermaid
 flowchart TD
-    C["Browser: HTML, CSS, JavaScript"]
-    V["Client validation and error feedback"]
-    F["Local name and status filtering"]
-    W["Cloudflare Worker: validation and eligibility rules"]
-    D["Cloudflare D1: candidate records"]
+    subgraph Client ["Browser Surface (Public Static Assets)"]
+        UI["Candidate Screening UI (index.html, styles.css)"]
+        Form["Knockout Triage Form (app.js)"]
+        Badge["Binary Status Badges (#1b8036 / #922020)"]
+        AuditList["Persisted Candidate Audit Table"]
+    end
 
-    C --> V
-    V -->|"HTTPS POST /entries: candidate fields and artifact URLs"| W
-    C -->|"HTTPS GET /entries"| W
-    W -->|"Parameterized reads and writes"| D
-    D -->|"Stored records"| W
-    W -->|"Records, eligibility results, or JSON errors"| C
-    C --> F
+    subgraph Edge ["Cloudflare Worker (worker.js)"]
+        Router["Worker Router (/entries)"]
+        Validator["Input & Schema Validator (STANDARDS.md)"]
+        Engine["Knockout Evaluation Engine (eligibility.js)"]
+    end
+
+    subgraph Storage ["Cloudflare D1 Relational Storage"]
+        D1_Cand[("Table: candidates")]
+    end
+
+    UI --> Form
+    Form -->|"POST /entries (JSON payload)"| Router
+    Router --> Validator
+    Validator --> Engine
+    Engine -->|"INSERT record (.bind())"| D1_Cand
+    D1_Cand -->|"HTTP 201 JSON {id, status, unmet_reasons}"| Badge
+    Badge --> AuditList
+    UI -->|"GET /entries"| Router
+    Router -->|"SELECT * ORDER BY created_at DESC"| D1_Cand
+    D1_Cand -->|"JSON array of candidate records"| AuditList
 ```
-
-Client validation and filtering run in the browser. Only the Worker accesses D1. Artifact URLs are stored as text; external artifacts are reviewed by a human and are not automatically fetched. The initial prototype uses synthetic candidate data.
