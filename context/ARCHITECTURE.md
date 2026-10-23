@@ -1,6 +1,6 @@
 # ARCHITECTURE.md
 
-Accountable: Rishi Ajith (Architect).
+Accountable: Kenneth Riley II (Architect).
 
 ## The Gate: Build, Buy, or Delegate
 
@@ -51,8 +51,8 @@ Scores are planning estimates, not test results. Each cell shows the score follo
 ## ADR-001: Build the candidate screening prototype with Cloudflare Worker and D1
 
 - **Date:** October 8, 2026
-- **Status:** Accepted
-- **Accountable:** Rishi Ajith (Architect)
+- **Status:** Superseded by ADR-002
+- **Accountable:** Rishi Ajith
 - **Approver:** Kenneth Riley II
 - **Door:** Build
 ### Context
@@ -70,23 +70,81 @@ The team selects Build: a plain HTML/CSS/JavaScript frontend communicating with 
 **Specification follow-up:** Coordinate with the Specifier to clarify F-05's verification meaning and USERS.md's immutable-audit-log claim. Define authorized access to candidate records before using real applicant data. These gaps are recorded explicitly rather than treated as implemented features.
 ### Revisit Trigger
 Review this decision before Phase 2 implementation begins and no later than October 22, 2026. Reopen it sooner if the team needs real applicant data, independent credential verification, protected audit history, or a record volume that makes downloading and filtering the authorized list impractical. The Architect will bring revised options to the Approver. If the decision changes after acceptance, record a superseding ADR instead of silently rewriting the accepted decision. 
+
+## ADR-002: Formalize Cloudflare Worker API Contracts, D1 Relational Schema, and Evidence Verification
+
+- **Date:** October 22, 2026
+- **Status:** Accepted (Supersedes ADR-001)
+- **Accountable:** Kenneth Riley II
+- **Approver:**
+- **Door:** Two-way
+
+### Context
+Phase 1 selected Cloudflare Workers and D1 to host candidate intake, eligibility verification, and persistence. During Phase 2 implementation (Feature F-02 / verification schema), empirical findings required formalizing server-side validation and persistent storage. Rather than relying solely on ephemeral client-side storage, candidate skill declarations and accompanying evidence text must persist in a relational Cloudflare D1 database. Furthermore, input boundaries (specifically 10–200 character constraints on evidence submissions) must be enforced deterministically at the edge Worker level to prevent invalid data ingestion.
+
+### Options
+1. **Client-only validation with passive D1 sync:** Client validates lengths and saves directly to D1. (Rejected: client DOM manipulation can bypass character length constraints and compromise data integrity).
+2. **Edge-authoritative Worker API with D1 persistence:** Client form (`app.js`) validates lengths for immediate user feedback; edge Worker (`worker.js`) authoritatively validates payloads and writes to table `evidence` via parameterized statements (`.bind()`).
+3. **External storage service (Supabase/Airtable):** Revisit Buy/Delegate option. (Rejected: introduces third-party data egress violating Trust Boundary and budget constraints).
+
+### Decision
+The team selects Option 2. Candidate evidence submission and verification logic run on Cloudflare Workers and D1 (`wrangler.toml` binding `env.DB`). The Worker exposes two authoritative REST endpoints:
+1. `POST /api/evidence`: Validates that `pathId`, `skillName`, and `evidenceText` exist, and enforces that `evidenceText` is between 10 and 200 characters. Rejects malformed requests with HTTP 400 (`{ error: "evidenceText must be 10 to 200 characters" }`). Inserts valid payloads into table `evidence` using `env.DB.prepare(...).bind(pathId, skillName, evidenceText)` and returns HTTP 201 with the created record metadata.
+2. `GET /api/evidence?path_id=<id>`: Queries D1 using parameterized filtering (`SELECT * FROM evidence WHERE path_id = ?`) and returns JSON arrays of verified candidate evidence.
+
+### Consequences
+- **Easier:** Guarantees tamper-proof enforcement of Feature F-02 validation rules; provides centralized parameterized persistence in D1 surviving page reloads; surfaces immediate DOM feedback states without page reload.
+- **Harder:** Introduces edge network latency on evidence submission compared to purely in-memory browser storage; requires client error banners and form field preservation if network requests or D1 queries fail; requires handling CORS preflight (`OPTIONS`) across Pages and Worker origins.
+- **Limits:** Stored evidence text and self-reported skill declarations are persisted for recruiter review; the system does not independently verify external portfolio URLs.
+- **Specification follow-up:** Coordinates with Specifier to ensure `FEATURES.md` reflects the 10–200 character boundary rules and HTTP 400 error payloads verified in `DDR-003.md`.
+
+### Revisit Trigger
+Reopen if Cloudflare D1 write latency exceeds 800ms during high-volume intake, or if external credential verification APIs are introduced into the project scope before Final release.
+
+## D1 Database Schema
+
+To support candidate intake, qualification verification (Feature F-02), and persistent audit trails, the Cloudflare D1 database implements the `evidence` relational table adhering to `STANDARDS.md` parameterized query rules (`.bind()`):
+
+```sql
+-- Production D1 Schema for Candidate Verification Persistence
+CREATE TABLE IF NOT EXISTS evidence (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    path_id TEXT NOT NULL,
+    skill_name TEXT NOT NULL,
+    evidence_text TEXT NOT NULL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_evidence_path ON evidence(path_id);
+```
+
 ## Architecture Diagram
 
 ```mermaid
 flowchart TD
-    C["Browser: HTML, CSS, JavaScript"]
-    V["Client validation and error feedback"]
-    F["Local name and status filtering"]
-    W["Cloudflare Worker: validation and eligibility rules"]
-    D["Cloudflare D1: candidate records"]
+    subgraph Browser ["Client Surface (Cloudflare Pages)"]
+        UI["Candidate Screening UI (index.html, styles.css)"]
+        Form["Evidence Submission Form (app.js)"]
+        Badge["Verification Badge & Status (#15803d / #922020)"]
+    end
 
-    C --> V
-    V -->|"HTTPS POST /entries: candidate fields and artifact URLs"| W
-    C -->|"HTTPS GET /entries"| W
-    W -->|"Parameterized reads and writes"| D
-    D -->|"Stored records"| W
-    W -->|"Records, eligibility results, or JSON errors"| C
-    C --> F
+    subgraph Edge ["Cloudflare Worker (worker.js)"]
+        Router["Worker Router (/api/evidence)"]
+        CORS["CORS Preflight & Origin Filter"]
+        Validator["Input Length Validator (10-200 chars)"]
+    end
+
+    subgraph Storage ["Cloudflare D1 Relational Storage"]
+        D1_Evidence[("Table: evidence")]
+    end
+
+    UI --> Form
+    Form -->|"POST /api/evidence (JSON)"| Router
+    Router --> CORS
+    CORS --> Validator
+    Validator -->|"INSERT (.bind())"| D1_Evidence
+    D1_Evidence -->|"HTTP 201 JSON {id, created_at}"| Badge
+    UI -->|"GET /api/evidence?path_id=" | Router
+    Router --> CORS
+    CORS -->|"SELECT WHERE path_id = ?"| D1_Evidence
 ```
-
-Client validation and filtering run in the browser. Only the Worker accesses D1. Artifact URLs are stored as text; external artifacts are reviewed by a human and are not automatically fetched. The initial prototype uses synthetic candidate data.

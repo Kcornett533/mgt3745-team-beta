@@ -32,10 +32,15 @@ Phase 1 established the problem scope, domain model, architectural boundaries, a
 5. [context/FEATURES.md](context/FEATURES.md): Kano and EARS
 6. [docs/PROBE-001.md](docs/PROBE-001.md): what bolt.new had to guess
 7. [context/ARCHITECTURE.md](context/ARCHITECTURE.md): the Gate, ADR-001, the diagram
-8. [context/EVALS.md](context/EVALS.md): the tree, the RAT, every member's stake
-9. [context/CLAUDE.md](context/CLAUDE.md), [context/STANDARDS.md](context/STANDARDS.md), [context/TOOLS.md](context/TOOLS.md): how we work
-10. [docs/DDR-001.md](docs/DDR-001.md): the probe delegation
-11. Previews: [STYLE.md](context/STYLE.md), [SKILLS.md](context/SKILLS.md), [AGENTS.md](context/AGENTS.md)
+8. [ADR-001: Cloudflare Worker and D1 Build Gate](context/ARCHITECTURE.md#adr-001-build-the-candidate-screening-prototype-with-cloudflare-worker-and-d1)
+9. [ADR-002: Evidence Verification & Relational Schema](context/ARCHITECTURE.md#adr-002-formalize-cloudflare-worker-api-contracts-d1-relational-schema-and-evidence-verification)
+10. [D1 Database Schema](context/ARCHITECTURE.md#d1-database-schema)
+11. [DDR-003: Feature F-02 Implementation](docs/DDR-003.md)
+12. [context/EVALS.md](context/EVALS.md): the tree, the RAT, every member's stake
+13. [context/CLAUDE.md](context/CLAUDE.md), [context/STANDARDS.md](context/STANDARDS.md), [context/TOOLS.md](context/TOOLS.md): how we work
+14. [docs/DDR-001.md](docs/DDR-001.md): the probe delegation
+15. [STYLE.md](context/STYLE.md)
+16. [SKILLS.md](context/SKILLS.md)
 
 ## AI Use
 
