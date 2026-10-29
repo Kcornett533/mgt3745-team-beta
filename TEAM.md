@@ -75,8 +75,10 @@ R = Responsible (does the work), A = Accountable (answers for it; exactly one pe
 | context/EVALS.md | C, I |  |  | A, R |  |
 | Context Scaffold Pruning | C, I |  |  | A, R | |
 | docs/DDR-LOG.md | C, I | |  | A, R | |
-| Individual Retrospectives (docs/retro/) | A, R (self) | - | - | A, R (self) | C |
-| Pull Request Reviews | R | - | - | R | - |
+| Individual Retrospectives (docs/retro/<name>.md) | A, R (own file only) | | | A, R (own file only) | C |
+| Pull Request Reviews | R | | | A, R | |
+
+Each individual retrospective has one Accountable owner: its author. Each member reviews the other member's pull requests, so neither approves their own work; Regina Choi (Reviewer) is Accountable for review quality.
 
 ## Rotation Plan
 
