@@ -63,7 +63,7 @@ Each Stake is quoted unchanged from [EVALS.md](../context/EVALS.md#prediction-st
 > **Untested.** No recruiter used the prototype. The real-time filter (F-04) was also not built.
 
 **Rishi Ajith (Architect).** *"During Phase 2 testing, valid synthetic candidate records will survive a page reload and appear in a second browser. At least one request sent directly to the Worker with a missing required field will be rejected without creating a database row."*
-> **Supported.** Records seeded on October 23 were still returned on October 29 by a client with no browser storage. A malformed POST returned 400, and the row count stayed at 5.
+> **Supported.** All five records saved on October 23 (four seeded, one from a live POST) were still returned on October 29 by a client with no browser storage. A malformed POST returned 400, and the row count stayed at 5.
 
 **Where our predictions were systematically off.** We predicted well about our own system and could not check our predictions about other people. Both Stakes that resolved (Rishi's and Kamyaab's) could be checked using only the repository and the deployed Worker. Both Stakes that depended on users (Regina's and Kenneth's) stayed untested. The error was not in what we predicted but in when: every Stake said "during Phase 2 testing with users", and nobody owned that testing. Kamyaab's Stake also shows a second bias. We predicted that the review *rules* would catch bugs, and the rules were followed in form (every Phase 2 change came through a PR) but not in substance (approvals that did not match the diff).
 

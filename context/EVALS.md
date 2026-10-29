@@ -126,9 +126,9 @@ flowchart TD
 **When to check:** During Phase 2 integration testing, using synthetic data.
 
 **Resolution (Phase 3, October 29, 2026): Supported, with one substitution.**
-- *Persistence:* the five synthetic records seeded on October 23 (03:10 UTC) were still returned by `GET /entries` on October 29, from a client with no browser storage (`curl`). A second browser was not literally used; a client with no shared storage stands in for it.
+- *Persistence:* all five synthetic records from October 23 (four from `seed.sql` at 03:10 UTC, and one valid `POST` from the DDR-004 live check at 03:11 UTC) were still returned by `GET /entries` on October 29, from a client with no browser storage (`curl`). A second browser was not literally used; a client with no shared storage stands in for it.
 - *Malformed request:* `POST /entries` with five required fields missing returned HTTP 400 and `{"error":"Missing required verification fields","fields":[...]}`. The row count stayed at 5 before and after.
-- *Who checked:* these checks were run by Claude Code (DDR-005), which also built the Worker (DDR-004). Regina Choi re-runs them before the RETRO pull request merges, so the tool that built the feature is not its only grader.
+- *Who checked:* these checks were run by Claude Code (DDR-005), which also built the Worker (DDR-004). Regina Choi re-ran them on October 29 (PR #25), so the tool that built the feature is not its only grader.
 
 ## Where the Stakes Disagree
 
