@@ -13,7 +13,7 @@ Every delegation to an AI tool across Phases 1 to 3, one row per Delegation Deci
 | [DDR-002](DDR-002.md) | 1 | Clarity and consistency review of Phase 1 documents | ChatGPT (model not recorded) | C | Rishi Ajith | #11 | **Not recorded** ("Time saved was not measured", per DDR-002) |
 | [DDR-003](DDR-003.md) | 2 | F-02 validation decision and drafts | Not named ("AI assistance", per DDR-003) | R | Regina Choi | #17 | **Not recorded** |
 | [DDR-004](DDR-004.md) | 2 | Build of F-01, F-02, F-03 (Worker, D1 schema, page, tests) and deploy | Claude Code (Claude Opus 5.5) | R | Regina Choi | #20 | **Not recorded** |
-| [DDR-005](DDR-005.md) | 3 | PR #22 review fixes, CODEOWNERS, DDR log, RETRO, Stake resolutions, scaffold pruning, individual retro draft | Claude Code (Claude Opus 5.5) | R | Regina Choi | #22, #23, and the Phase 3 docs PRs | **About 1** (agent commits run from 17:19 to 17:50 ET on October 29, after about 30 minutes of review; estimated from timestamps, not timed) |
+| [DDR-005](DDR-005.md) | 3 | PR #22 review fixes, CODEOWNERS, DDR log, RETRO, Stake resolutions, scaffold pruning, individual retro draft | Claude Code (Claude Opus 5.5) | R | Regina Choi | #22, #23, and the Phase 3 docs PRs | **About 1** (agent commits run from 17:19 to 17:50 ET on October 29, plus the PR #22 review before them, which was not timed) |
 
 **Net hours delegated:** 0.05 hours are recorded. None of the Phase 1 or Phase 2 DDRs logged time, so the sum cannot honestly be completed. This is a finding in [RETRO.md](RETRO.md#delegation-against-plan).
 
