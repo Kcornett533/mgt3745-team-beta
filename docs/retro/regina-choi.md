@@ -14,7 +14,7 @@ A smaller issue was that my two Phase 1 review commits ("reviewer #1", "reviewer
 
 ## The artifact I am proudest of
 
-**My Changes Requested review on [#21](https://github.com/Kcornett533/mgt3745-team-beta/pull/21).** ADR-002 and the diagram still described our old HW4 app (the `evidence` table, `/api/evidence` on Pages, and `#15803d`) instead of what #20 had just deployed. I pointed out each mismatch and the file that showed it. The fix (`d42b9e2`) brought the architecture back in line with the build. This is the only check in the whole project that changed what the team actually did (see [Evals against plan](../RETRO.md#evals-against-plan)).
+**My Changes Requested review on [#21](https://github.com/Kcornett533/mgt3745-team-beta/pull/21).** ADR-002 and the diagram still described our old HW4 app (the `evidence` table, `/api/evidence` on Pages, and `#15803d`) instead of what #20 had just deployed. I pointed out each mismatch and the file that showed it. The fix (`d42b9e2`) brought the architecture back in line with the build. This is the only check in Phases 1 and 2 that changed what the team actually did (see [Evals against plan](../RETRO.md#evals-against-plan)).
 
 ## My delegation record
 
