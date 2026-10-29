@@ -85,7 +85,7 @@ Each Stake is quoted unchanged from [EVALS.md](../context/EVALS.md#prediction-st
 
 ### Net hours delegated
 
-Summed from [DDR-LOG.md](DDR-LOG.md): **0.05 hours recorded** (the DDR-001 probe). DDR-002 to DDR-004 recorded no time, and DDR-005 records about 1.5 hours. The honest total is "unknown, at least 1.5 hours". The DDR template had no hours field, so nobody measured the trade the DDRs were meant to justify. Each DDR has an "Economic Rationale" section and no economic numbers.
+Summed from [DDR-LOG.md](DDR-LOG.md): **0.05 hours recorded** (the DDR-001 probe). DDR-002 to DDR-004 recorded no time, and DDR-005 is estimated at about 1 hour from timestamps. The honest total is "unknown, at least about 1 hour". The DDR template had no hours field, so nobody measured the trade the DDRs were meant to justify. Each DDR has an "Economic Rationale" section and no economic numbers.
 
 ---
 
