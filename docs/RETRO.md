@@ -113,8 +113,8 @@ Every EARS change the project forced, with the pull request that made it.
 | 4 | Exclusions: no record deletion or status mutation | bolt.new added delete and overwrite controls (PROBE-001 #4) | #3 |
 | 5 | F-02: the payload is restricted to named attributes | bolt.new added institution and phone fields (PROBE-001 #5) | #3 |
 | 6 | Explicit JOB-01 to JOB-03 trace IDs, deterministic F-01 rules, and an F-06 Unwanted-behavior row | Regina Choi's review on #3, items 1 to 3 | #8 (`ef6bdd3`) |
-| 7 | F-02: adds the governance coursework declaration as a sixth attribute | F-01 criterion 4 could not be evaluated (DDR-003, DDR-004 decision 1) | The Phase 3 RETRO PR |
-| 8 | F-01 criterion 2: names the target intake year 2027 | DDR-004 decision 2 had to assume it | The Phase 3 RETRO PR |
-| 9 | F-01 criterion 3: names the `Verified Work Visa` and `None` options | DDR-004 decision 3 | The Phase 3 RETRO PR |
+| 7 | F-02: adds the governance coursework declaration as a sixth attribute | F-01 criterion 4 could not be evaluated (DDR-003, DDR-004 decision 1) | #25 |
+| 8 | F-01 criterion 2: names the target intake year 2027 | DDR-004 decision 2 had to assume it | #25 |
+| 9 | F-01 criterion 3: names the `Verified Work Visa` and `None` options | DDR-004 decision 3 | #25 |
 
 Five of the nine changes came from a three-minute AI probe (DDR-001). The probe was the most productive specification check the team ran, measured in EARS changes per hour.
