@@ -1,14 +1,6 @@
 # CODEOWNERS: the Accountable column of TEAM.md, enforced by GitHub.
 # Every path needs two owners so that nobody approves their own work.
 # Last matching pattern wins. Owners must have write access to this repository.
+# Phase 3: consolidated two-person team (see TEAM.md); both active members own every path.
 
-*                        @ReginaChoi @kcornett533
-/context/PROJECT.md        @kdotll @ReginaChoi
-/context/USERS.md          @kdotll @ReginaChoi
-/context/FEATURES.md       @kdotll @ReginaChoi
-/context/ARCHITECTURE.md   @RishiA10 @ReginaChoi
-/context/EVALS.md          @ReginaChoi @kdotll
-/context/CLAUDE.md         @kcornett533 @RishiA10
-/context/STANDARDS.md      @kcornett533 @RishiA10
-/context/TOOLS.md          @kcornett533 @RishiA10
-/docs/                     @ReginaChoi @kcornett533
+*                        @kdotll @ReginaChoi
