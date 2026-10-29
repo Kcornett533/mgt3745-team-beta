@@ -8,10 +8,10 @@ Computational workflows frequently lose data provenance across fragmented termin
 
 | Member | Phase 1 role | Phase 2 role | Final role |
 |---|---|---|---|
-| **Kamyaab Cornett** | Implementer | Specifier | Architect |
-| **Kenneth Riley II** | Specifier | Architect | Reviewer |
-| **Rishi A.** | Architect | Reviewer | Implementer |
-| **Regina Choi** | Reviewer | Implementer | Specifier |
+| **Kamyaab Cornett** | Implementer | Specifier | Withdrew from course |
+| **Kenneth Riley II** | Specifier | Architect | Architect & Implementer |
+| **Rishi Ajith** | Architect | Reviewer | Withdrew from course |
+| **Regina Choi** | Reviewer | Implementer | Specifier, Reviewer, & Evaluator |
 
 Working agreement, RACI matrix, and rotation plan: [TEAM.md](TEAM.md).
 

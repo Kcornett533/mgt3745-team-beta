@@ -1,7 +1,7 @@
 # FEATURES.md
 
 Status: ACTIVE
-Accountable: Kenneth Riley II (Specifier)
+Accountable: Regina Choi (Specifier)
 
 ## Kano Classification
 
