@@ -10,7 +10,6 @@ Accountable: Kenneth Riley II (Specifier)
 | Regina Choi | INT-03 (HW3 interview with 2025 accounting graduate; struggled to identify entry-level skill requirements, graduated without internship evidence to point to) | Profile 1 |
 | Kenneth Riley II | INT-01 (HW2 interview with Tier-1 automotive supplier recruiter; screening 300–500+ applicants, ATS fatigue, manual operational knockout triage) | Profile 2 |
 | Regina Choi | INT-01 (HW2 interview with auto dealership Finance Manager; contract triage, human double-checking to prevent costly downstream missing-detail errors) | Profile 3 |
-| Kamyaab Cornett | INT-01 & INT-02 (HW2/HW3 interviews with academic & industry BME researchers; manuscript prep overhead, manual file packaging, unbudgeted external validation re-runs) | Profile 4 |
 ---
 
 ## Profile 1: Accounting Graduate Preparing for Initial Career Entry

@@ -14,7 +14,7 @@ errors; never throw to the console.
 ## Delegation guidance: what to paste, what to check first
 **Paste, in order:** PROJECT, FEATURES (rows marked), STYLE, STANDARDS, TOOLS, then the current page files. One instruction line naming the files it may touch.
 **Check first:** the diff's file list, then innerHTML / concatenated SQL, then whether it used the tokens.
-**Reliably wrong (this week):** *fill from your error-analysis log*
+**Reliably wrong (Phase 2, observed in PR #21 and the #17 and #20 reviews):** names carried over from the HW4 evidence tracker (`evidence` table, `/api/evidence`, `#15803d`) where the spec says `candidates`, `/entries`, `#1b8036`. Grep the diff for old names before accepting.
 
 ## Pattern: verify delegated builds before accepting them
 **When:** an AI tool generates a feature for an existing project.
