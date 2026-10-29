@@ -23,8 +23,8 @@ Accountable: Kenneth Riley II (Specifier)
 
 - **Ubiquitous:** The system shall evaluate candidate eligibility against explicit, deterministic criteria:
   1. **Degree Alignment:** Major must be strictly within accredited accounting/finance disciplines (`Accounting`, `Finance`, `Accounting Information Systems`, or `Internal Audit`).
-  2. **Graduation Timeline:** Graduation year must be within the current academic cycle ($\le 1$ year from target intake).
-  3. **Work Authorization:** Must possess valid, unexpired domestic employment eligibility (`Citizen`, `Permanent Resident`, `F-1 OPT`, or verified work visa).
+  2. **Graduation Timeline:** Graduation year must be within the current academic cycle ($\le 1$ year from target intake). The target intake year is 2027, so graduation years 2026 and 2027 pass. *(Phase 3 spec finding: the year was unnamed until DDR-004 had to assume it.)*
+  3. **Work Authorization:** Must possess valid, unexpired domestic employment eligibility (`Citizen`, `Permanent Resident`, `F-1 OPT`, or `Verified Work Visa`). The intake form also offers `None`, which fails this criterion. *(Phase 3 spec finding, from DDR-004.)*
   4. **Coursework Prerequisite:** Completion of at least one foundational governance or assurance course (Auditing, AIS, or Internal Controls).
 - **Event-driven:** When a candidate submits their qualification profile, the system shall evaluate the credentials against the four criteria and assign an immediate, strictly binary status badge (`Eligible` or `Ineligible` with no indeterminate or conditional states).
 - **State-driven:** While displaying evaluation results, the system shall render `Eligible` in success green (`#1b8036`) and `Ineligible` in error red (`#922020`) per `STYLE.md`.
@@ -33,7 +33,7 @@ Accountable: Kenneth Riley II (Specifier)
 ### Feature F-02: Strict Verification Schema & Error Gate (Must-be)
 *Traces to: USERS.md (JOB-03)*
 
-- **Ubiquitous:** The system shall enforce complete schema validation on both client and edge server before committing any candidate verification record to persistent storage, restricting payload attributes strictly to candidate name, accredited degree discipline, graduation year, work authorization status, and coursework artifact URL.
+- **Ubiquitous:** The system shall enforce complete schema validation on both client and edge server before committing any candidate verification record to persistent storage, restricting payload attributes strictly to candidate name, accredited degree discipline, graduation year, work authorization status, governance coursework declaration (`Auditing`, `Accounting Information Systems`, `Internal Controls`, or `None`), and coursework artifact URL. *(Phase 3 spec finding: the Phase 1 list had five attributes and no coursework field, so F-01 criterion 4 could not be evaluated. DDR-003 raised the conflict, and DDR-004 added the sixth attribute.)*
 - **Event-driven:** When an intake payload contains missing, null, or empty fields, the edge Worker shall reject the request with HTTP 400 Bad Request and return a descriptive JSON error (`{"error": "Missing required verification fields"}`).
 - **State-driven:** While an error state is active, the client UI shall render the error message visibly in the status element using `textContent` and retain previously entered data in form fields.
 - **Unwanted-behavior (IF):** If a user attempts to submit the form with any required compliance field empty, then the system shall halt network submission and display an inline warning identifying the missing field.
