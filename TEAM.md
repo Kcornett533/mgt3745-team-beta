@@ -12,6 +12,7 @@
 ## Roster
 
 | Name | Role | GitHub | Contact hours (ET) |
+|---|---|---|---|
 | Regina Choi | Specifier, Reviewer, Evaluator | ReginaChoi | 17:00-00:00 |
 | Kenneth Riley II | Implementer, Architect | kdotll | Flexible |
 | Kamyaab Cornett | Withdrew From Course | Kcornett533 | Flexible |
@@ -61,7 +62,7 @@ R = Responsible (does the work), A = Accountable (answers for it; exactly one pe
 
 R = Responsible (does the work), A = Accountable (answers for it; exactly one person, always a person), C = Consulted (asked before), I = Informed (told after). AI tools may be R or C and are never A. Every row where AI is R names the human A beside it.
 
-| Artifact | Kenneth R. (Implementor, Architect) | Rishi A. (Withdrew From Course) | Kamyaab C. (Withdrew From Course) | Regina C. (Specifier, Reviewer, Evaluator) | AI tools |
+| Artifact | Kenneth R. (Implementer, Architect) | Rishi A. (Withdrew From Course) | Kamyaab C. (Withdrew From Course) | Regina C. (Specifier, Reviewer, Evaluator) | AI tools |
 |---|---|---|:---:|---|---|
 | TEAM.md & context/CLAUDE.md | A, R |  | | C, I |  |
 | context/ARCHITECTURE.md | A, R |  |  | C, I | C |
@@ -81,10 +82,12 @@ R = Responsible (does the work), A = Accountable (answers for it; exactly one pe
 
 Nobody holds the same role twice, and every role is filled in every phase.
 
+> **Phase 3 exception (instructor-approved).** After the withdrawals of Kamyaab Cornett and Rishi Ajith, the instructor approved that the two remaining members are jointly responsible for all Phase 3 deliverables. Kenneth Riley II therefore holds Architect again (Phase 2 and Final), and Regina Choi holds Reviewer again (Phase 1 and Final).
+
 | Member | Phase 1 | Phase 2 | Final |
 |---|---|---|---|
 | **Kamyaab Cornett** | Implementer | Specifier | Withdrew From Course |
-| **Kenneth Riley II** | Specifier | Architect | Implementor, Architect |
+| **Kenneth Riley II** | Specifier | Architect | Implementer, Architect |
 | **Rishi Ajith** | Architect | Reviewer | Withdrew From Course |
 | **Regina Choi** | Reviewer | Implementer | Specifier, Reviewer, Evaluator |
 
