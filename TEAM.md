@@ -13,8 +13,8 @@
 
 | Name | Role | GitHub | Contact hours (ET) |
 |---|---|---|---|
-| Regina Choi | Specifier, Reviewer, Evaluator | ReginaChoi | 17:00-00:00 |
-| Kenneth Riley II | Implementer, Architect | kdotll | Flexible |
+| Regina Choi | Specifier, Reviewer, & Evaluator | ReginaChoi | 17:00-00:00 |
+| Kenneth Riley II | Architect & Implementer | kdotll | Flexible |
 | Kamyaab Cornett | Withdrew From Course | Kcornett533 | Flexible |
 | Rishi Ajith | Withdrew From Course | RishiA10 | Flexible |
 
@@ -62,7 +62,7 @@ R = Responsible (does the work), A = Accountable (answers for it; exactly one pe
 
 R = Responsible (does the work), A = Accountable (answers for it; exactly one person, always a person), C = Consulted (asked before), I = Informed (told after). AI tools may be R or C and are never A. Every row where AI is R names the human A beside it.
 
-| Artifact | Kenneth R. (Implementer, Architect) | Rishi A. (Withdrew From Course) | Kamyaab C. (Withdrew From Course) | Regina C. (Specifier, Reviewer, Evaluator) | AI tools |
+| Artifact | Kenneth R. (Architect & Implementer) | Rishi A. (Withdrew From Course) | Kamyaab C. (Withdrew From Course) | Regina C. (Specifier, Reviewer, & Evaluator) | AI tools |
 |---|---|---|:---:|---|---|
 | TEAM.md & context/CLAUDE.md | A, R |  | | C, I |  |
 | context/ARCHITECTURE.md | A, R |  |  | C, I | C |
@@ -87,9 +87,9 @@ Nobody holds the same role twice, and every role is filled in every phase.
 | Member | Phase 1 | Phase 2 | Final |
 |---|---|---|---|
 | **Kamyaab Cornett** | Implementer | Specifier | Withdrew From Course |
-| **Kenneth Riley II** | Specifier | Architect | Implementer, Architect |
+| **Kenneth Riley II** | Specifier | Architect | Architect & Implementer |
 | **Rishi Ajith** | Architect | Reviewer | Withdrew From Course |
-| **Regina Choi** | Reviewer | Implementer | Specifier, Reviewer, Evaluator |
+| **Regina Choi** | Reviewer | Implementer | Specifier, Reviewer, & Evaluator |
 
 ---
 
