@@ -1,6 +1,8 @@
 # EVALS.md
 
-Accountable: Regina Choi (Reviewer). This file holds our opportunity solution tree, our riskiest assumption, the evals we plan for Phase 2, and each member's prediction.
+Accountable: Regina Choi (Final-phase Evaluator; Reviewer in Phase 1). This file holds our opportunity solution tree, our riskiest assumption, the evals we planned for Phase 2, and each member's prediction. Phase 3 added a resolution under each Stake and left the text above it unchanged. The full accounting of every check is in [docs/RETRO.md](../docs/RETRO.md).
+
+**Phase 3 status:** The RAT and Evaluations 1 to 4 were **not run** (see [RETRO.md](../docs/RETRO.md#rat-verdict)). The code checks that did run are listed in [Evals against plan](../docs/RETRO.md#evals-against-plan).
 
 ## Opportunity Solution Tree
 
@@ -78,6 +80,8 @@ flowchart TD
 
 **When to check:** During Phase 2, after the team tests the relevant prototype with intended users.
 
+**Resolution (Phase 3, October 29, 2026): Untested.** The prototype was never tested with students or recent graduates, so there is no evidence either way about whether participants find the requirements useful or struggle to connect their coursework to evidence. The only evidence behind the prediction is still the single INT-03 interview it started from.
+
 ### Prediction Stake: Kamyaab Cornett (Implementer)
 
 **Prediction:** I predict that our team will maintain 100% compliance with our pull request and review rules with zero direct commits to `main` during Phase 2. Enforcing our DOM safety rules and database input checks during code reviews will catch and fix at least two data formatting or payload bugs before any code is merged.
@@ -89,6 +93,11 @@ flowchart TD
 **What would contradict my prediction:** Unvetted code bypasses PR review into `main`, or input validation errors slip through into production without being caught during review.
 
 **When to check:** At the conclusion of Phase 2, by inspecting the repository's git commit history, pull request review logs, and database error traces.
+
+**Resolution (Phase 3, October 29, 2026): Split. The first half is supported; the second half is refuted.**
+- *Zero direct commits to `main` during Phase 2: supported.* All five Phase 2 commits on `main`'s first-parent history are pull request merges (#16, #17, #19, #20, #21). Phase 1 had ten direct commits to `main` between October 7 and 9, made before protection was in place.
+- *Reviews catch at least two data formatting or payload bugs before merge: refuted.* No Phase 2 review caught a code payload bug. One review (Regina Choi on #21, Changes Requested) caught a schema mismatch in the documentation: ADR-002 described the old `evidence` table, the `/api/evidence` route, and the color `#15803d` instead of the built `candidates` table, `/entries`, and `#1b8036`. That was fixed in `d42b9e2` before merge, but #21 merged five minutes later with no re-review. The two approving reviews on #17 and #20 describe code that was not in their diffs (`bind(pathId, skillName, evidenceText)` from the HW4 Worker, and `#15803d`).
+- *Database error traces* were not inspected. No error logging was set up.
 
 ### Prediction Stake: Kenneth Riley II (Specifier)
 
@@ -102,6 +111,8 @@ flowchart TD
 
 **When to check:** During user testing of the working prototype before the final project submission.
 
+**Resolution (Phase 3, October 29, 2026): Untested.** No recruiter or user tester triaged profiles on the prototype, so there is no timing or accuracy data. The deployed page does name each unmet criterion beside an `Ineligible` badge (F-01 Unwanted-behavior), which is the mechanism the prediction relies on, but a mechanism is not a measurement.
+
 ### Prediction Stake: Rishi Ajith (Architect)
 
 **Prediction:** During Phase 2 testing, valid synthetic candidate records will survive a page reload and appear in a second browser. At least one request sent directly to the Worker with a missing required field will be rejected without creating a database row.
@@ -113,6 +124,11 @@ flowchart TD
 **What would contradict my prediction:** The saved record disappears, cannot be retrieved in the second browser, or the Worker stores the malformed submission.
 
 **When to check:** During Phase 2 integration testing, using synthetic data.
+
+**Resolution (Phase 3, October 29, 2026): Supported, with one substitution.**
+- *Persistence:* all five synthetic records from October 23 (four from `seed.sql` at 03:10 UTC, and one valid `POST` from the DDR-004 live check at 03:11 UTC) were still returned by `GET /entries` on October 29, from a client with no browser storage (`curl`). A second browser was not literally used; a client with no shared storage stands in for it.
+- *Malformed request:* `POST /entries` with five required fields missing returned HTTP 400 and `{"error":"Missing required verification fields","fields":[...]}`. The row count stayed at 5 before and after.
+- *Who checked:* these checks were run by Claude Code (DDR-005), which also built the Worker (DDR-004). Regina Choi re-ran them on October 29 (PR #25), so the tool that built the feature is not its only grader.
 
 ## Where the Stakes Disagree
 
