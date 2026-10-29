@@ -1,7 +1,5 @@
 # TEAM.md
 
-> Replace every line in angle brackets. Each member adds their own roster row through their own pull request: that is your first PR.
-
 ## Working Agreement
 
 - **Meetings.** We will meet once a week through Zoom or a group call for about 30 minutes. We will agree on the time through our group chat.
@@ -14,9 +12,10 @@
 ## Roster
 
 | Name | Role | GitHub | Contact hours (ET) |
-|Regina Choi|Implementer|ReginaChoi|17:00-00:00|
-|Rishi Ajith|Reviewer|RishiA10|Flexible|
-| Kenneth Riley II | Architect | kdotll | Flexible |
+| Regina Choi | Specifier, Reviewer, Evaluator | ReginaChoi | 17:00-00:00 |
+| Kenneth Riley II | Implementer, Architect | kdotll | Flexible |
+| Kamyaab Cornett | Withdrew From Course | Kcornett533 | Flexible |
+| Rishi Ajith | Withdrew From Course | RishiA10 | Flexible |
 
 ## RACI Matrix (Phase 1)
 
@@ -58,16 +57,36 @@ R = Responsible (does the work), A = Accountable (answers for it; exactly one pe
 | Pull request reviews | R | | | | |
 | README.md | C | | | | |
 
+## RACI Matrix (Phase 3)
+
+R = Responsible (does the work), A = Accountable (answers for it; exactly one person, always a person), C = Consulted (asked before), I = Informed (told after). AI tools may be R or C and are never A. Every row where AI is R names the human A beside it.
+
+| Artifact | Kenneth R. (Implementor, Architect) | Rishi A. (Withdrew From Course) | Kamyaab C. (Withdrew From Course) | Regina C. (Specifier, Reviewer, Evaluator) | AI tools |
+|---|---|---|:---:|---|---|
+| TEAM.md & context/CLAUDE.md | A, R |  | | C, I |  |
+| context/ARCHITECTURE.md | A, R |  |  | C, I | C |
+| docs/DEPLOY.md | A, R |  |  | C, I | R |
+| Live Build & Worker Deployment | A, R | |  | C, I |  |
+| Walkthrough Recording | A, R |  |  | C, I |  |
+| Root README.md | A, R |  |  | C, I |  |
+| context/FEATURES.md | C, I |  |  | A, R | C |
+| docs/RETRO.md | C, I |  |  | A, R | |
+| context/EVALS.md | C, I |  |  | A, R |  |
+| Context Scaffold Pruning | C, I |  |  | A, R | |
+| docs/DDR-LOG.md | C, I | |  | A, R | |
+| Individual Retrospectives (docs/retro/) | A, R (self) | - | - | A, R (self) | C |
+| Pull Request Reviews | R | - | - | R | - |
+
 ## Rotation Plan
 
 Nobody holds the same role twice, and every role is filled in every phase.
 
 | Member | Phase 1 | Phase 2 | Final |
 |---|---|---|---|
-| **Kamyaab Cornett** | Implementer | Specifier | Architect |
-| **Kenneth Riley II** | Specifier | Architect | Reviewer |
-| **Rishi Ajith** | Architect | Reviewer | Implementer |
-| **Regina Choi** | Reviewer | Implementer | Specifier |
+| **Kamyaab Cornett** | Implementer | Specifier | Withdrew From Course |
+| **Kenneth Riley II** | Specifier | Architect | Implementor, Architect |
+| **Rishi Ajith** | Architect | Reviewer | Withdrew From Course |
+| **Regina Choi** | Reviewer | Implementer | Specifier, Reviewer, Evaluator |
 
 ---
 
@@ -79,3 +98,4 @@ Nobody holds the same role twice, and every role is filled in every phase.
 | **Wednesday, October 7, 2026 (5:30 PM)** | Reviewed role artifact pull requests, reconciled STANDARDS.md conflicts, validated tools/governance files, and finalized README structure and cross-document link consistency before release. | Kamyaab Cornett |
 | **Wednesday, October 14, 2026 (6:00 PM)** | Conducted first formal team sync after Phase 1 submission. clarified Phase 2 roles, created a timeline and plan on how we'll tackle each portion. | Kenneth Riley II |
 | **Thursday, October 22, 2026 (3:00 PM)** | Informed of a workload shift within our team, discussed ideas to pivot, reached out to professor for extention and was denied. | Kenneth Riley II |
+| **Wednesday, October 28, 2026 (7:00 PM)** | Final team sync for Phase 3 role rotation. Reconciled after withdrawals of Kamyaab Cornett and Rishi Ajith. Reassigned roles to 2-person structure. Updated Phase 3 RACI matrix and CLAUDE.md. | Kenneth Riley II |
