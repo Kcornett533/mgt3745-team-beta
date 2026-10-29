@@ -1,5 +1,5 @@
 Status: ACTIVE
-Accountable: Kamyaab Cornett (Implementer)
+Accountable: Regina Choi (Final-phase Reviewer; from Kamyaab Cornett, who withdrew)
 
 This file defines the engineering, documentation, and version control standards for the project. Merged from team members' Module 3/4 baseline standards. Where rules conflicted, the stricter standard was retained as noted.
 
