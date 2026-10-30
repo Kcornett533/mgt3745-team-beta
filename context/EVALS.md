@@ -96,7 +96,7 @@ flowchart TD
 
 **Resolution (Phase 3, October 29, 2026): Split. The first half is supported; the second half is refuted.**
 - *Zero direct commits to `main` during Phase 2: supported.* All five Phase 2 commits on `main`'s first-parent history are pull request merges (#16, #17, #19, #20, #21). Phase 1 had ten direct commits to `main` between October 7 and 9, made before protection was in place.
-- *Reviews catch at least two data formatting or payload bugs before merge: refuted.* No Phase 2 review caught a code payload bug. One review (Regina Choi on #21, Changes Requested) caught a schema mismatch in the documentation: ADR-002 described the old `evidence` table, the `/api/evidence` route, and the color `#15803d` instead of the built `candidates` table, `/entries`, and `#1b8036`. That was fixed in `d42b9e2` before merge, but #21 merged five minutes later with no re-review. The two approving reviews on #17 and #20 describe code that was not in their diffs (`bind(pathId, skillName, evidenceText)` from the HW4 Worker, and `#15803d`).
+- *Reviews catch at least two data formatting or payload bugs before merge: refuted.* No Phase 2 review caught a code payload bug. One review (Regina Choi on #21, Changes Requested) caught a schema mismatch in the documentation: ADR-002 described the old `evidence` table, the `/api/evidence` route, and the color `#15803d` instead of the built `candidates` table, `/entries`, and `#1b8036`. That was fixed in `d42b9e2` before merge, but #21 merged five minutes later with no re-review. The approving review on #20 cites `#15803d`, which is not in its diff. The approving review on #17 accurately cites the HW4 `bind(pathId, skillName, evidenceText)` call that *was* in its diff, but it cites color tokens (`#0f172a`, `#15803d`) that are not, and does not flag that the PR titled F-002 contained the HW4 evidence-tracker code. *(Corrected in Phase 3; the first version of this resolution said both reviews described code absent from their diffs. See judgment eval J6.)*
 - *Database error traces* were not inspected. No error logging was set up.
 
 ### Prediction Stake: Kenneth Riley II (Specifier)
@@ -133,3 +133,24 @@ flowchart TD
 ## Where the Stakes Disagree
 
 - **Candidate Artifact Friction vs. Recruiter Triage Speed:** Regina predicts candidates will struggle to supply tangible artifact evidence due to limited internship experience. Kenneth predicts that as long as the intake rules are deterministic, recruiters will triage applicants in under 30 seconds regardless of artifact depth. If candidates cannot identify evidence, recruiter triage may stall on incomplete inputs rather than speed up.
+
+## Judgment Evals: RETRO.md Claims (Phase 3)
+
+Each load-bearing claim in [docs/RETRO.md](../docs/RETRO.md) was checked against the primary evidence: the git history, the PR diffs and reviews on GitHub, or the deployed Worker. A claim **passes** only if the evidence shows it as worded. Claude Code drafted RETRO.md (DDR-005), so it ran the mechanical checks below but is not the judge: Regina Choi (Evaluator) checked each row against the linked evidence before approving this PR.
+
+| # | Claim in RETRO.md | How it was checked | Evidence found | Verdict |
+|---|---|---|---|---|
+| J1 | The RAT was untested | Searched the repository tree for interview, notes, user-test, or RAT data files. Asked Kenneth for any notes (PR #25, issue #28). | No such files; no notes supplied | **Pass.** Absence in the repo is not proof the interviews never happened, so the verdict is "untested", not "refuted". |
+| J2 | The DACI-001 reopen trigger fired on October 22 and nobody acted on it | `git log -- docs/DACI-001.md` | Last change is `5beb673` on October 9 | **Pass** |
+| J3 | Zero direct commits to `main` in Phase 2 | `git log --first-parent --no-merges --since=2026-10-10 --until=2026-10-24 main` | 0 commits | **Pass** |
+| J4 | Ten direct commits to `main` in Phase 1 | Same command up to October 10, excluding the initial commit | 10 commits | **Pass** |
+| J5 | #21 merged about five minutes after the fix, with no re-review | `gh pr view 21`: review times and merge time; commit time of `d42b9e2` | Changes Requested 03:20:56Z; fix 03:53:54Z; merge 03:58:39Z; no later review | **Pass** (4 min 45 s) |
+| J6 | "The approvals on #17 and #20 describe code that was not in their diffs" | `gh pr diff 17` and `gh pr diff 20`, searched for each value the reviews cite | #20: `#15803d` is absent from its diff. #17: `bind(pathId, skillName, evidenceText)` **is** in its diff (worker.js), while `#0f172a` and `#15803d` are not. | **Fail as worded.** It was half true. Corrected in RETRO.md and in Kamyaab's Stake resolution: the #17 review described the diff it had, but did not notice that the diff was HW4 code, not F-002. |
+| J7 | Rishi's Stake is supported (persistence, plus a 400 on a malformed request) | Re-run by Regina Choi on October 29 (comment on PR #25) | 5 records from October 23; empty POST returned 400; count unchanged | **Pass.** The re-run also corrected "five seeded" to "four seeded plus one live POST". |
+| J8 | #17 and #21 declare no AI use, while DDR-003 says AI was used | PR bodies and DDR-003 | #17: `## AI use` None. #21: `AI Use: None`. DDR-003: "AI assistance was used" | **Pass** |
+| J9 | Spec findings 1 to 5 came from PROBE-001 via #3 | `git show --stat f086149` | Changes `FEATURES.md`, `PROBE-001.md`, and `DDR-001.md` | **Pass** |
+| J10 | "Only one check changed what the team did" | Reviewed every row of the evals-against-plan table | True for Phases 1 and 2. In Phase 3, J6 and J7 also changed documents. | **Fail as worded.** Narrowed to "in Phases 1 and 2", with the Phase 3 changes listed. |
+| J11 | Each "build differently" decision is tied to a measurement | Read each decision for a number or a record that would have changed it | 1: zero interviews and the DACI trigger. 2: review and merge timestamps and diff contents (J5, J6). 3: Rishi's #3 comment and DDR-003/004. | **Pass** |
+| J12 | RETRO.md follows the assignment's section order | Compared the headings with the Phase 3 brief | RAT, Evals, Stakes, Delegation, Build differently, Spec findings | **Pass** |
+
+**Result:** 10 of 12 claims pass as written. The two that failed (J6 and J10) were overstated, not invented: each had a true core and wording broader than the evidence. Both were corrected in this PR. The pattern matches what RETRO.md says about the reviews: claims got checked against what we expected to find rather than against the diff itself.
