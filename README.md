@@ -21,9 +21,13 @@ Phase 1 established the problem scope, domain model, architectural boundaries, a
 
 ## See It Work
 
-**Deployed URL:** https://team-beta-screening.rchoi47.workers.dev
+Presentation: [Walkthrough Video](https://youtu.be/YOUR_LINK_HERE)
 
-Enter a synthetic candidate profile and press **Evaluate and save**. The page shows a green **Eligible** or red **Ineligible** badge, names any unmet criteria, and adds the record to the triage list, which loads from D1. Screenshots: *to be added*.
+**Deployed URL:** https://team-beta-screening.kdotll.workers.dev
+
+Enter a synthetic candidate profile and press **Evaluate and save**. The page shows a green **Eligible** or red **Ineligible** badge, names any unmet criteria, and adds the record to the triage list, which loads from D1. 
+
+Screenshots: *to be added*.
 
 ## Build Status
 

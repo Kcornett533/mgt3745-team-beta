@@ -4,7 +4,7 @@
 
 name = "team-beta-screening"
 main = "worker.js"
-compatibility_date = "2026-09-01"
+compatibility_date = "2026-10-29"
 
 # Static pages (index.html, app.js, styles.css) are served from public/ on the
 # same origin as the API, so the browser needs no CORS allowance.
@@ -14,5 +14,5 @@ directory = "./public"
 # The D1 binding. The Worker sees this database as env.DB.
 [[d1_databases]]
 binding = "DB"
-database_name = "team-beta-candidates"
-database_id = "1d0eef28-df3b-4bd9-a648-cc67d6af7334"
+database_name = "mgt3745-dev"
+database_id = "498b72f2-22a4-47c2-a89d-53416a39616a"
