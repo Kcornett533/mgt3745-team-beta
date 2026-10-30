@@ -102,6 +102,10 @@ The team selects Option 2. Candidate screening, evaluation, and static asset ser
 ### Revisit Trigger
 Reopen if Cloudflare D1 write latency exceeds 800ms during high-volume intake, or if external credential verification APIs are added before Final release.
 
+## Phase 3 Verification
+
+The Phase 2 edge architecture and D1 relational schema held up without structural modification. The Phase 3 deployment verified that edge validation and SQLite persistence operate reliably from a clean checkout under personal Cloudflare account credentials.
+
 ## D1 Database Schema
 
 To support candidate intake, knockout triage (Feature F-01), input validation (Feature F-02), and persistent audit history (Feature F-03), Cloudflare D1 implements the `candidates` relational table adhering to `STANDARDS.md` parameterized query rules (`.bind()`):

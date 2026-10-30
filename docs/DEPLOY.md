@@ -42,7 +42,7 @@ wrangler d1 create mgt3745-dev
 [[d1_databases]]
 binding = "DB"
 database_name = "mgt3745-dev"
-database_id = "498b72f2-22a4-47c2-a89d-53416a39616a"
+database_id = "<your-new-database-id-here>"
 ```
 
 3. Execute the schema migration against the Cloudflare D1 database to create the `candidates` table:
